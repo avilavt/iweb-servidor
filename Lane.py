@@ -13,7 +13,7 @@ class Lane:
         self.laneList = list()
 
         url = 'https://datosabiertos.malaga.eu/recursos/transporte/trafico/da_carrilesBici-4326.geojson'
-        response = urllib.request.urlopen(url)
+        response = urllib.urlopen(url)
 
         if response.status >= 400:
             raise RuntimeError('Error with the request. Error code:' + response.status_code, response.status_code)
