@@ -8,5 +8,5 @@ basic_scaling:
   max_instances: 1
 
 handlers:
-- url: auto
-  script: OpenDataWebService.py
+- url: /.*
+  script: OpenDataWebService
