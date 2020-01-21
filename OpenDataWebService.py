@@ -36,8 +36,8 @@ if not os.path.isfile('./iweb.db'):
     usuarioDB.sql_close()
     comentarioDB.sql_close()
 
-@app.route('', methods=['GET'])
-def home():
+@app.route('/', methods=['GET'])
+def holaMundo():
     datos = json.dumps({'texto':'Hola mundo'});
     return Response(datos, mimetype='application/json', status=200)
        
