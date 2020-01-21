@@ -36,7 +36,12 @@ if not os.path.isfile('./iweb.db'):
     usuarioDB.sql_close()
     comentarioDB.sql_close()
 
-
+@app.route('', methods=['GET'])
+def home():
+    datos = json.dumps({'texto':'Hola mundo'});
+    return Response(datos, mimetype='application/json', status=200)
+       
+    
 #Informacion meteorlogica
 
 #url por defecto: http://127.0.0.1:5000/IWeb/weather/
