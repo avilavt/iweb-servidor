@@ -27,11 +27,11 @@ if not os.path.isfile('./iweb.db'):
     usuarioDB.sql_insert((2,'Cristian Rafael Avila Garcia','avilavt@gmail.com','Admin'),2)
     usuarioDB.sql_insert((3,'Akalay Alaeak','alaeak.aa@gmail.com','Admin'),3)
     usuarioDB.sql_insert((4,'Usuario Inventado','usuario@unknown.dot','User'),4)
-    #creación de tabla Comentario
+    #creacion de tabla Comentario
     comentarioDB = ComentarioDatabase('iweb.db')
     comentarioDB.sql_connection()
     comentarioDB.sql_table()
-    #inserción de comentario 'Sin comentarios'
+    #insercion de comentario 'Sin comentarios'
     comentarioDB.sql_insert((0,datetime.date(2019,12,17),'Without commentaries',0.0,0.0,0,'Empty'),0)
     usuarioDB.sql_close()
     comentarioDB.sql_close()
