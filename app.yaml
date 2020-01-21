@@ -1,6 +1,8 @@
 
 
-runtime: python37
+runtime: python27
+api_version: 1
+threadsafe: true
 
 
 
@@ -9,4 +11,4 @@ basic_scaling:
 
 handlers:
 - url: /.*
-  script: auto
+  script: OpenDataWebService.py
