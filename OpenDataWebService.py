@@ -17,11 +17,11 @@ import http.client
 
 app = Flask(__name__)
 if not os.path.isfile('./iweb.db'):
-    #creación de base de datos y tabla Usuario
+    #creacion de base de datos y tabla Usuario
     usuarioDB = UsuarioDatabase('iweb.db')
     usuarioDB.sql_connection()
     usuarioDB.sql_table()
-    #inserción de datos
+    #insercion de datos
     usuarioDB.sql_insert((0,'Anonymous','anonymous@anonymous.iweb','User'),0)
     usuarioDB.sql_insert((1,'Usuario de prueba','pruebaparaingweb@gmail.com','Admin'),1)
     usuarioDB.sql_insert((2,'Cristian Rafael Ávila García','avilavt@gmail.com','Admin'),2)
