@@ -24,7 +24,7 @@ if not os.path.isfile('./iweb.db'):
     #insercion de datos
     usuarioDB.sql_insert((0,'Anonymous','anonymous@anonymous.iweb','User'),0)
     usuarioDB.sql_insert((1,'Usuario de prueba','pruebaparaingweb@gmail.com','Admin'),1)
-    usuarioDB.sql_insert((2,'Cristian Rafael Ávila García','avilavt@gmail.com','Admin'),2)
+    usuarioDB.sql_insert((2,'Cristian Rafael Avila Garcia','avilavt@gmail.com','Admin'),2)
     usuarioDB.sql_insert((3,'Akalay Alaeak','alaeak.aa@gmail.com','Admin'),3)
     usuarioDB.sql_insert((4,'Usuario Inventado','usuario@unknown.dot','User'),4)
     #creación de tabla Comentario
