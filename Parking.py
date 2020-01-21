@@ -12,7 +12,7 @@ class Parking:
         self.parkList = list()
 
         url = " https://datosabiertos.malaga.eu/recursos/transporte/trafico/da_aparcamientosBici-4326.geojson"
-        response = urllib.request.urlopen(url)
+        response = urllib.urlopen(url)
         self.data = response.read()
         features = json.loads(self.data)['features']
 
