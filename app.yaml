@@ -9,4 +9,4 @@ basic_scaling:
 
 handlers:
 - url: /.*
-  script: OpenDataWebService
+  script: auto
