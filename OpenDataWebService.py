@@ -37,7 +37,7 @@ if not os.path.isfile('./iweb.db'):
     comentarioDB.sql_close()
 
 
-#Información meteorlogica
+#Informacion meteorlogica
 
 #url por defecto: http://127.0.0.1:5000/IWeb/weather/
 @app.route('/IWeb/weather/', methods=['GET'])
