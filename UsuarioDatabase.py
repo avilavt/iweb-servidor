@@ -162,7 +162,7 @@ class UsuarioDatabase:
 
     def sql_get_last_id(self):
         last_index = 0;
-        query = "SELECT id_usuario FROM usuario"
+        query = "SELECT max(id_usuario) FROM usuario"
         self.cursorObj.execute(query)
         rows = self.cursorObj.fetchall()
         if rows:

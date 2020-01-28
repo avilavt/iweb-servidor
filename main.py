@@ -17,32 +17,32 @@ import http.client
 
 app = Flask(__name__)
 if not os.path.isfile('./iweb.db'):
-    #creacion de base de datos y tabla Usuario
+    #creación de base de datos y tabla Usuario
     usuarioDB = UsuarioDatabase('iweb.db')
     usuarioDB.sql_connection()
     usuarioDB.sql_table()
-    #insercion de datos
+    #inserción de datos
     usuarioDB.sql_insert((0,'Anonymous','anonymous@anonymous.iweb','User'),0)
     usuarioDB.sql_insert((1,'Usuario de prueba','pruebaparaingweb@gmail.com','Admin'),1)
-    usuarioDB.sql_insert((2,'Cristian Rafael Avila Garcia','avilavt@gmail.com','Admin'),2)
+    usuarioDB.sql_insert((2,'Cristian Rafael Ávila García','avilavt@gmail.com','Admin'),2)
     usuarioDB.sql_insert((3,'Akalay Alaeak','alaeak.aa@gmail.com','Admin'),3)
     usuarioDB.sql_insert((4,'Usuario Inventado','usuario@unknown.dot','User'),4)
-    #creacion de tabla Comentario
+    #creación de tabla Comentario
     comentarioDB = ComentarioDatabase('iweb.db')
     comentarioDB.sql_connection()
     comentarioDB.sql_table()
-    #insercion de comentario 'Sin comentarios'
+    #inserción de comentario 'Sin comentarios'
     comentarioDB.sql_insert((0,datetime.date(2019,12,17),'Without commentaries',0.0,0.0,0,'Empty'),0)
     usuarioDB.sql_close()
     comentarioDB.sql_close()
+
 
 @app.route('/', methods=['GET'])
 def holaMundo():
     datos = json.dumps({'texto':'Hola mundo'});
     return Response(datos, mimetype='application/json', status=200)
-       
-    
-#Informacion meteorlogica
+
+#Información meteorlogica
 
 #url por defecto: http://127.0.0.1:5000/IWeb/weather/
 @app.route('/IWeb/weather/', methods=['GET'])
@@ -197,23 +197,25 @@ def find_by_user_from_to(id_from,id_to):
 
 
 #formato json valido para la entrada: {"nombre":"nombre","email":"email","rol":"rol"}
-#url por defecto: http://127.0.0.1:5000/IWeb/webresources/entity.usuario/
-@app.route('/IWeb/webresources/entity.usuario/', methods=['POST'])
+#url por defecto: http://127.0.0.1:5000/IWeb/webresources/entity.usuario/post/
+@app.route('/IWeb/webresources/entity.usuario/post/', methods=['POST'])
 def create_user():
-    #print('Request = ' + str(request.json))
+    print('Request = ' + str(request.json))
     if not request.json or not 'email' in request.json or not 'nombre' in request.json or not 'rol' in request.json :
         return Response(json.dumps({400:str('Bad request: '+str(request.json))}), mimetype='application/json', status=400)
     try:
         usuarioDB = UsuarioDatabase('iweb.db')
         usuarioDB.sql_connection()
         id = usuarioDB.sql_get_last_id()+1
+        print('Ultimo id actual : ' + str(usuarioDB.sql_get_last_id()))
+        print('Id nuevo: ' + str(id))
         usuarioDB.sql_insert((id,request.json['nombre'],request.json['email'],request.json['rol']), id)
         response = usuarioDB.sql_find(id)
         usuario = {'idUsuario':response[0][0],'nombre':response[0][1],'email':response[0][2],'rol':response[0][3]}
     except sqlite3.IntegrityError as interr:
         mensaje = interr.args
         codigo = 400
-        response = {codigo: mensaje}
+        response = {codigo: mensaje, 'id':id}
         return Response(json.dumps(response), mimetype='application/json', status=codigo)
     except ValueError as exc:
         mensaje = exc.args[0][0]
