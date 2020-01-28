@@ -22,21 +22,21 @@ app = Flask(__name__)
 sys.setdefaultencoding('utf-8')
 
 if not os.path.isfile('./iweb.db'):
-    #creación de base de datos y tabla Usuario
+    #creacion de base de datos y tabla Usuario
     usuarioDB = UsuarioDatabase('iweb.db')
     usuarioDB.sql_connection()
     usuarioDB.sql_table()
-    #inserción de datos
+    #insercion de datos
     usuarioDB.sql_insert((0,'Anonymous','anonymous@anonymous.iweb','User'),0)
     usuarioDB.sql_insert((1,'Usuario de prueba','pruebaparaingweb@gmail.com','Admin'),1)
     usuarioDB.sql_insert((2,'Cristian Rafael Ávila García','avilavt@gmail.com','Admin'),2)
     usuarioDB.sql_insert((3,'Akalay Alaeak','alaeak.aa@gmail.com','Admin'),3)
     usuarioDB.sql_insert((4,'Usuario Inventado','usuario@unknown.dot','User'),4)
-    #creación de tabla Comentario
+    #creacion de tabla Comentario
     comentarioDB = ComentarioDatabase('iweb.db')
     comentarioDB.sql_connection()
     comentarioDB.sql_table()
-    #inserción de comentario 'Sin comentarios'
+    #insercion de comentario 'Sin comentarios'
     comentarioDB.sql_insert((0,datetime.date(2019,12,17),'Without commentaries',0.0,0.0,0,'Empty'),0)
     usuarioDB.sql_close()
     comentarioDB.sql_close()
@@ -47,7 +47,7 @@ def holaMundo():
     datos = json.dumps({'texto':'Hola mundo'});
     return Response(datos, mimetype='application/json', status=200)
 
-#Información meteorlogica
+#Informacion meteorlogica
 
 #url por defecto: http://127.0.0.1:5000/IWeb/weather/
 @app.route('/IWeb/weather/', methods=['GET'])
