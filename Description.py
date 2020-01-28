@@ -1,6 +1,9 @@
 #!flask/bin/python
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import sys
+sys.setdefaultencoding('utf-8')
+
 class Description:
 
     def __init__(self, description):
@@ -30,6 +33,6 @@ class Description:
         self.name = desc[0].strip()
         descripcion.append({'ubication':ubicacion,'description':descrip.strip(),'places':plazas})
         return descripcion
-    
+
     def getNameParking(self):
         return self.name
