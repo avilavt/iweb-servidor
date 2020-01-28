@@ -23,11 +23,11 @@ class Description:
     def getDescriptionParking(self):
         descripcion = list()
         desc = self.description.replace('<b>', '#').replace('</b>', '#').replace('<', '#').replace('>', '#').split('#')
-        indexU = desc.index('Ubicación:')
+        indexU = desc.index('Ubicacion:')
         ubicacion = desc[indexU+1].replace('&nbsp;',' ').strip().replace(',',' Nº ')
         indexP = desc.index('N° Plazas: ')
         plazas = desc[indexP+1].replace('&nbsp;',' ').strip().replace(',','.')
-        indexD = desc.index('Descripción:')
+        indexD = desc.index('Descripcion:')
         descrip = desc[indexD+1].replace('&nbsp;',' ').strip().replace(',','.')
         desc = ubicacion.replace('Nº','#').split('#')
         self.name = desc[0].strip()
