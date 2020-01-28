@@ -1,6 +1,8 @@
 #!flask/bin/python
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import sys
+
 from flask import Flask, request, Response, jsonify, json
 from flask_cors import CORS
 import urllib, json
@@ -16,6 +18,9 @@ import http.client
 # http://localhost:5000
 
 app = Flask(__name__)
+
+sys.setdefaultencoding('utf-8')
+
 if not os.path.isfile('./iweb.db'):
     #creación de base de datos y tabla Usuario
     usuarioDB = UsuarioDatabase('iweb.db')
