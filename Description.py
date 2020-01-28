@@ -13,9 +13,9 @@ class Description:
     def getDescriptionLane(self):
         descripcion = list()
         desc = self.description.replace('<b>', '#').replace('</b>', '#').replace('<', '#').replace('>', '#').split('#')
-        indexK = desc.index('Kilómetros:')
+        indexK = desc.index('Kilometros:')
         km = float(desc[indexK+1].replace('&nbsp;',' ').strip().replace(',','.'))
-        indexD = desc.index('Descripción:')
+        indexD = desc.index('Descripcion:')
         descripcion.append({'kilometers':km,'description':desc[indexD+1].replace('&nbsp;',' ').strip()})
         return descripcion
 
