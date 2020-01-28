@@ -29,7 +29,7 @@ class Description:
         plazas = desc[indexP+1].replace('&nbsp;',' ').strip().replace(',','.')
         indexD = desc.index('Descripcion:')
         descrip = desc[indexD+1].replace('&nbsp;',' ').strip().replace(',','.')
-        desc = ubicacion.replace('Nº','#').split('#')
+        desc = ubicacion.replace('N','#').split('#')
         self.name = desc[0].strip()
         descripcion.append({'ubication':ubicacion,'description':descrip.strip(),'places':plazas})
         return descripcion
