@@ -27,7 +27,7 @@ class Lane:
             name = feature['properties']['name']
             description = Description(feature['properties']['description']).getDescriptionLane()
             coordinates = list()
-            #Málaga longitud=-4 latitud=36
+            #Malaga longitud=-4 latitud=36
             geometries = feature['geometry']['coordinates']
             if feature['geometry']['type'] == 'Point':
                 coordenadas = Coordinates(latitud = geometries[0],longitud = geometries[1])
@@ -110,7 +110,7 @@ class Lane:
             lista.append(lista0[index]['coordinates'])
             index += 1
         return lista
-        
+
     def get_description(self, id):
         index = 0
         while index < len(self.laneList):
