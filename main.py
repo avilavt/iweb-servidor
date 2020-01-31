@@ -16,6 +16,8 @@ import http.client
 # http://localhost:5000
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 
@@ -218,7 +220,7 @@ def create_user():
     except sqlite3.IntegrityError as interr:
         mensaje = interr.args
         codigo = 400
-        response = {codigo: mensaje, 'id':id}
+        response = {codigo: mensaje}
         return Response(json.dumps(response), mimetype='application/json', status=codigo)
     except ValueError as exc:
         mensaje = exc.args[0][0]
