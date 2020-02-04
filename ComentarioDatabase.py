@@ -129,7 +129,7 @@ class ComentarioDatabase:
 
     def sql_get_last_id(self):
         last_index = 0;
-        query = "SELECT id_comentario FROM comentario"
+        query = "SELECT max(id_comentario) FROM comentario"
         self.cursorObj.execute(query)
         rows = self.cursorObj.fetchall()
         if rows:

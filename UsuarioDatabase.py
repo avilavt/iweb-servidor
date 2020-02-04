@@ -26,7 +26,7 @@ class UsuarioDatabase:
         query = "INSERT INTO usuario(id_usuario, name, email, role, photo) VALUES(?, ?, ?, ?, null)"
         self.cursorObj.execute(query,entities)
         self.con.commit()
-        self.sql_update_photo('logo_small.png', id)
+        self.sql_update_photo('imagen.jpg', id)
         response = self.sql_find(id)
         if len(response)==0:
             raise ValueError(['Operation not realized',"412"])
@@ -94,7 +94,7 @@ class UsuarioDatabase:
         return self.convertToBinaryData(filename) == response
 
     def sql_update_photo_from_blob(self,blob,id):
-        query = "UPDATE usuario SET photo = x\'" + str(blob) + "\' where id_usuario = " + str(id)
+        query = "UPDATE usuario SET photo = x\'" + blob + "\' where id_usuario = " + str(id)
         self.cursorObj.execute(query)
         self.con.commit()
         response = self.sql_get_photo(id)

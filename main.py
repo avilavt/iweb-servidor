@@ -10,7 +10,7 @@ from ComentarioDatabase import ComentarioDatabase
 from UsuarioDatabase import UsuarioDatabase
 import sqlite3
 import os
-import datetime
+from datetime import date
 import http.client
 import base64
 import codecs
@@ -39,7 +39,7 @@ if not os.path.isfile('./iweb.db'):
     comentarioDB.sql_connection()
     comentarioDB.sql_table()
     #insercion de comentario 'Sin comentarios'
-    comentarioDB.sql_insert((0,datetime.date(2019,12,17),'Without commentaries',0.0,0.0,0,'Empty'),0)
+    comentarioDB.sql_insert((0,date.today(),'Without commentaries',0.0,0.0,0,'Empty'),0)
     usuarioDB.sql_close()
     comentarioDB.sql_close()
 
@@ -246,15 +246,19 @@ def find_by_user_from_to(id_from,id_to):
 #url por defecto: http://127.0.0.1:5000/IWeb/webresources/entity.usuario/photo/
 @app.route('/IWeb/webresources/entity.usuario/photo/', methods=['POST'])
 def update_photo():
-    print('Peticion de cambio de foto = ' + str(request.json))
+    #print('Peticion de cambio de foto = ' + str(request.json))
     if not request.json or not 'photo' in request.json or not 'idUsuario' in request.json  :
         return Response(json.dumps({400:str('Bad request: '+str(request.json))}), mimetype='application/json', status=400)
     try:
-        
+
         usuarioDB = UsuarioDatabase('iweb.db')
         usuarioDB.sql_connection()
         id = request.json['idUsuario']
-        usuarioDB.sql_update_photo_from_blob(request.json['photo'], id)
+        photo = request.json['photo']
+        inicio = photo.index(',')
+        foto = photo[inicio+1:len(photo)]
+        #print(foto)
+        usuarioDB.sql_update_photo_from_blob(base64.b64encode(foto), id)
         response = usuarioDB.sql_find(id)
         usuario = {'idUsuario':response[0][0],
                 'nombre':response[0][1],
@@ -470,7 +474,7 @@ def find_by_comentario_from_to(id_from,id_to):
 #url por defecto: http://127.0.0.1:5000/IWeb/webresources/entity.comentario/
 @app.route('/IWeb/webresources/entity.comentario/', methods=['POST'])
 def create_comentario():
-    #print('Request = ' + str(request.json))
+    print('Request = ' + str(request.json))
     if not request.json or not 'contenido' in request.json or not 'idUsuario' in request.json:
         return Response(json.dumps({400:str('Bad request: '+str(request.json))}), mimetype='application/json', status=400)
     try:
@@ -490,9 +494,16 @@ def create_comentario():
             tipoDato = 'Empty'
         else:
             tipoDato = request.json['tipoDato']
+        print('Fecha De Creacion :' + str(fechaCreacion))
+        print('Latitud: ' + str(latitud))
+        print('Longitud: ' + str(longitud))
+        print('Tipo de dato: ' + str(tipoDato))
+
         comentarioDB = ComentarioDatabase('iweb.db')
         comentarioDB.sql_connection()
+        print('Ultimo id de comentario: ' + str(comentarioDB.sql_get_last_id()))
         id = comentarioDB.sql_get_last_id()+1
+        print('Id de comentario actual: ' + str(id))
         comentarioDB.sql_insert((id,fechaCreacion,request.json['contenido'],latitud,longitud,request.json['idUsuario'],tipoDato), id)
         response = comentarioDB.sql_find(id)
         comentario = {'idComentario':response[0][0],'fechaCreacion':response[0][1],'contenido':response[0][2],'latitud':response[0][3],'longitud':response[0][4],'idUsuario':response[0][5],'tipoDato':response[0][6]}
