@@ -18,14 +18,15 @@ class UsuarioDatabase:
             print(Error)
 
     def sql_table(self):
-        query = "CREATE TABLE if not exists usuario(id_usuario integer PRIMARY KEY, name text NOT NULL, email text NOT NULL UNIQUE, role text NOT NULL)"
+        query = "CREATE TABLE if not exists usuario(id_usuario integer PRIMARY KEY, name text NOT NULL, email text NOT NULL UNIQUE, role text NOT NULL, photo blob)"
         self.cursorObj.execute(query)
         self.con.commit()
 
     def sql_insert(self,entities,id):
-        query = "INSERT INTO usuario(id_usuario, name, email, role) VALUES(?, ?, ?, ?)"
+        query = "INSERT INTO usuario(id_usuario, name, email, role, photo) VALUES(?, ?, ?, ?, null)"
         self.cursorObj.execute(query,entities)
         self.con.commit()
+        self.sql_update_photo('logo_small.png', id)
         response = self.sql_find(id)
         if len(response)==0:
             raise ValueError(['Operation not realized',"412"])
@@ -41,6 +42,17 @@ class UsuarioDatabase:
     def sql_get_name(self,id):
         lista = list()
         query = "SELECT name FROM usuario WHERE id_usuario = " + str(id)
+        self.cursorObj.execute(query)
+        rows = self.cursorObj.fetchall()
+        if not rows:
+            raise ValueError(['User not found',"404"])
+        for row in rows:
+            lista.append(row)
+        return lista[0][0]
+
+    def sql_get_photo(self,id):
+        lista = list()
+        query = "SELECT photo FROM usuario WHERE id_usuario = " + str(id)
         self.cursorObj.execute(query)
         rows = self.cursorObj.fetchall()
         if not rows:
@@ -73,6 +85,20 @@ class UsuarioDatabase:
         self.con.commit()
         response = self.sql_get_role(id)
         return str(response) == str(new_role)
+
+    def sql_update_photo(self,filename,id):
+        query = "UPDATE usuario SET photo = x\'" + str(self.convertToBinaryData(filename).hex()) + "\' where id_usuario = " + str(id)
+        self.cursorObj.execute(query)
+        self.con.commit()
+        response = self.sql_get_photo(id)
+        return self.convertToBinaryData(filename) == response
+
+    def sql_update_photo_from_blob(self,blob,id):
+        query = "UPDATE usuario SET photo = x\'" + str(blob) + "\' where id_usuario = " + str(id)
+        self.cursorObj.execute(query)
+        self.con.commit()
+        response = self.sql_get_photo(id)
+        return blob == response
 
     def sql_get_role(self,id):
         lista = list()
@@ -169,6 +195,18 @@ class UsuarioDatabase:
             for row in rows:
                 last_index = row
         return last_index[0]
+
+    def convertToBinaryData(self, filename):
+        #Convert digital data to binary format
+        with open(filename, 'rb') as file:
+            blobData = file.read()
+        return blobData
+
+    def writeTofile(self, data, filename):
+        # Convert binary data to proper format and write it on Hard Disk
+        with open(filename, 'wb') as file:
+            file.write(data)
+        print("Stored blob data into: ", filename, "\n")
 
 if __name__ == '__main__':
     db = Database('iweb.db')

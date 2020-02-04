@@ -10,8 +10,10 @@ from ComentarioDatabase import ComentarioDatabase
 from UsuarioDatabase import UsuarioDatabase
 import sqlite3
 import os
-from datetime import date,datetime
+import datetime
 import http.client
+import base64
+import codecs
 
 # http://localhost:5000
 
@@ -97,8 +99,13 @@ def find_all_user():
         usuarioDB = UsuarioDatabase('iweb.db')
         usuarioDB.sql_connection()
         response = usuarioDB.sql_find_all()
+
         while index < len(response):
-            usuario = {'idUsuario':response[index][0],'nombre':response[index][1],'email':response[index][2],'rol':response[index][3]}
+            usuario = {'idUsuario':response[index][0],
+                    'nombre':response[index][1],
+                    'email':response[index][2],
+                    'rol':response[index][3],
+                    'photo':(response[index][4]).hex()}
             lista.append(usuario)
             index += 1
     except ValueError as exc:
@@ -134,15 +141,37 @@ def find_by_user_id(id):
         usuarioDB = UsuarioDatabase('iweb.db')
         usuarioDB.sql_connection()
         response = usuarioDB.sql_find(id)
-        usuario = {'idUsuario':response[0][0],'nombre':response[0][1],'email':response[0][2],'rol':response[0][3]}
+        usuario = {'idUsuario':response[0][0],
+                'nombre':response[0][1],
+                'email':response[0][2],
+                'rol':response[0][3],
+                'photo':response[0][4].hex()}
     except ValueError as exc:
         mensaje = exc.args[0][0]
         codigo = int(exc.args[0][1])
         response = {codigo: mensaje}
-        return Response(json.dumps(usuario), mimetype='application/json', status=codigo)
+        return Response(json.dumps(response), mimetype='application/json', status=codigo)
     finally:
         usuarioDB.sql_close()
     return Response(json.dumps(usuario), mimetype='application/json', status=200)
+
+#url por defecto http://127.0.0.1:5000/IWeb/webresources/entity.usuario/0
+@app.route('/IWeb/webresources/entity.usuario/photo/<int:id>', methods=['GET'])
+def get_photo(id):
+    try:
+        usuarioDB = UsuarioDatabase('iweb.db')
+        usuarioDB.sql_connection()
+        response = usuarioDB.sql_find(id)
+        photo = {'photo':response[0][4].hex()}
+    except ValueError as exc:
+        mensaje = exc.args[0][0]
+        codigo = int(exc.args[0][1])
+        response = {codigo: mensaje}
+        return Response(json.dumps(response), mimetype='application/json', status=codigo)
+    finally:
+        usuarioDB.sql_close()
+    return Response(json.dumps(photo), mimetype='application/json', status=200)
+
 
 #url por defecto http://127.0.0.1:5000/IWeb/webresources/entity.usuario/email/"anonymous@anonymous.iweb"
 @app.route('/IWeb/webresources/entity.usuario/email/<string:email>', methods=['GET'])
@@ -151,7 +180,11 @@ def find_by_user_email(email):
         usuarioDB = UsuarioDatabase('iweb.db')
         usuarioDB.sql_connection()
         response = usuarioDB.sql_find_email(email)
-        usuario = {'idUsuario':response[0][0],'nombre':response[0][1],'email':response[0][2],'rol':response[0][3]}
+        usuario = {'idUsuario':response[0][0],
+                'nombre':response[0][1],
+                'email':response[0][2],
+                'rol':response[0][3],
+                'photo':response[0][4].hex()}
     except ValueError as exc:
         mensaje = exc.args[0][0]
         codigo = int(exc.args[0][1])
@@ -168,7 +201,11 @@ def find_by_user_name(name):
         usuarioDB = UsuarioDatabase('iweb.db')
         usuarioDB.sql_connection()
         response = usuarioDB.sql_find_name(name)
-        usuario = {'idUsuario':response[0][0],'nombre':response[0][1],'email':response[0][2],'rol':response[0][3]}
+        usuario = {'idUsuario':response[0][0],
+                'nombre':response[0][1],
+                'email':response[0][2],
+                'rol':response[0][3],
+                'photo':response[0][4].hex()}
     except ValueError as exc:
         mensaje = exc.args[0][0]
         codigo = int(exc.args[0][1])
@@ -188,7 +225,11 @@ def find_by_user_from_to(id_from,id_to):
         usuarioDB.sql_connection()
         response = usuarioDB.sql_find_between(id_from, id_to)
         while index < len(response):
-            usuario = {'idUsuario':response[index][0],'nombre':response[index][1],'email':response[index][2],'rol':response[index][3]}
+            usuario = {'idUsuario':response[index][0],
+                    'nombre':response[index][1],
+                    'email':response[index][2],
+                    'rol':response[index][3],
+                    'photo':(response[index][4]).hex()}
             lista.append(usuario)
             index += 1
     except ValueError as exc:
@@ -199,6 +240,40 @@ def find_by_user_from_to(id_from,id_to):
     finally:
         usuarioDB.sql_close()
     return Response(json.dumps(lista), mimetype='application/json', status=200)
+
+
+#formato json valido para la entrada: {"nombre":"nombre","email":"email","rol":"rol"}
+#url por defecto: http://127.0.0.1:5000/IWeb/webresources/entity.usuario/photo/
+@app.route('/IWeb/webresources/entity.usuario/photo/', methods=['POST'])
+def update_photo():
+    print('Peticion de cambio de foto = ' + str(request.json))
+    if not request.json or not 'photo' in request.json or not 'idUsuario' in request.json  :
+        return Response(json.dumps({400:str('Bad request: '+str(request.json))}), mimetype='application/json', status=400)
+    try:
+        
+        usuarioDB = UsuarioDatabase('iweb.db')
+        usuarioDB.sql_connection()
+        id = request.json['idUsuario']
+        usuarioDB.sql_update_photo_from_blob(request.json['photo'], id)
+        response = usuarioDB.sql_find(id)
+        usuario = {'idUsuario':response[0][0],
+                'nombre':response[0][1],
+                'email':response[0][2],
+                'rol':response[0][3],
+                'photo':response[0][4].hex()}
+    except sqlite3.IntegrityError as interr:
+        mensaje = interr.args
+        codigo = 400
+        response = {codigo: mensaje}
+        return Response(json.dumps(response), mimetype='application/json', status=codigo)
+    except ValueError as exc:
+        mensaje = exc.args[0][0]
+        codigo = int(exc.args[0][1])
+        response = {codigo: mensaje}
+        return Response(json.dumps(response), mimetype='application/json', status=codigo)
+    finally:
+        usuarioDB.sql_close()
+    return Response(json.dumps(usuario), mimetype='application/json', status=201)
 
 
 #formato json valido para la entrada: {"nombre":"nombre","email":"email","rol":"rol"}
@@ -216,7 +291,11 @@ def create_user():
         print('Id nuevo: ' + str(id))
         usuarioDB.sql_insert((id,request.json['nombre'],request.json['email'],request.json['rol']), id)
         response = usuarioDB.sql_find(id)
-        usuario = {'idUsuario':response[0][0],'nombre':response[0][1],'email':response[0][2],'rol':response[0][3]}
+        usuario = {'idUsuario':response[0][0],
+                'nombre':response[0][1],
+                'email':response[0][2],
+                'rol':response[0][3],
+                'photo':response[0][4].hex()}
     except sqlite3.IntegrityError as interr:
         mensaje = interr.args
         codigo = 400
@@ -317,7 +396,7 @@ def find_by_comentario_id(id):
         mensaje = exc.args[0][0]
         codigo = int(exc.args[0][1])
         response = {codigo: mensaje}
-        return Response(json.dumps(usuario), mimetype='application/json', status=codigo)
+        return Response(json.dumps(response), mimetype='application/json', status=codigo)
     finally:
         comentarioDB.sql_close()
     return Response(json.dumps(comentario), mimetype='application/json', status=200)

@@ -25,9 +25,14 @@ if not os.path.isfile('./iweb.db'):
 
 usuarioDB = UsuarioDatabase('iweb.db')
 usuarioDB.sql_connection()
-print('Last id: ' + str(usuarioDB.sql_get_last_id()))
-print('Find by name: ' + str(usuarioDB.sql_find_name("tIaN")))
-print('Find between 1 and 3: ' + str(usuarioDB.sql_find_between(1,3)))
+#print('Last id: ' + str(usuarioDB.sql_get_last_id()))
+#print('Find by name: ' + str(usuarioDB.sql_find_name("tIaN")))
+#print('Find between 1 and 3: ' + str(usuarioDB.sql_find_between(1,3)))
+
+#print('Update photo user 1 with laffey.jpg: ' + str(usuarioDB.sql_update_photo('laffey.jpg', 1)))
+#print(usuarioDB.writeTofile(usuarioDB.convertToBinaryData('laffey.jpg'),'laffeyDrinking.jpg'))
+
+
 #Prueba para usuarioDatabase
 '''
 usuarioDB = UsuarioDatabase('iweb.db')
@@ -43,16 +48,17 @@ for usuario in usuarioDB.sql_find_all():
 print(usuarioDB.sql_count())
 '''
 
+'''
 comentarioDB = ComentarioDatabase('iweb.db')
 comentarioDB.sql_connection()
 print('Comentario: ' + str(comentarioDB.sql_find(0)))
-#print('Comentarios de usuario 1: ' + str(comentarioDB.sql_get_by_id_usuario(1)))
-#print('Comentario que contiene pr: ' + str(comentarioDB.sql_find_by_contenido("pR")))
+print('Comentarios de usuario 1: ' + str(comentarioDB.sql_get_by_id_usuario(1)))
+print('Comentario que contiene pr: ' + str(comentarioDB.sql_find_by_contenido("pR")))
 print('Last id: ' + str(comentarioDB.sql_get_last_id()))
-
+'''
 
 #Prueba para comentarioDatabase
-'''
+
 comentarioDB = ComentarioDatabase('iweb.db')
 comentarioDB.sql_connection()
 print('Insert: ' + str(comentarioDB.sql_insert((1,datetime.date(2019,12,17),'no',0.0,0.0,0,'nno'), 1)))
@@ -63,4 +69,6 @@ print(comentarioDB.sql_find(0))
 for comentario in comentarioDB.sql_find_all():
     print(comentario)
 print(comentarioDB.sql_count())
-'''
+
+
+#print(usuarioDB.sql_get_photo(2))
